@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeCode Search</title>
+  <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <nav>
+      <a class="brand" href="dashboard.html">WeCode</a>
+      <a href="random.html">Random</a>
+      <a href="search.html" class="active">Search</a>
+      <a href="filter.html">Filter</a>
+
+      <div class="space"></div>
+      <button class="themebutn" id="themebutn" onclick="toggleTheme()">Let there be lyte ;-)</button>
+    </nav>
+
+    <div class="page">
+      <h2 class="section-title">Search challenges</h2>
+      <div class="search-row">
+        <input class="inputfield" id="searchinput" type="text" placeholder="Type the challenge's name...">
+        <select class="selectlge" id="challengedropdown" style="flex:1; min-width:180px;">
+          <option value="">Or... pick from this list</option>
+        </select>
+
+        <button class="doSearchbutn" onclick="doSearch()">Search</button>
+      </div>
+
+      <div id="searchresult"></div>
+
+      <div class="idkyet">
+        <button class="givinup" id="giveupbtn">I give up :'(</button>
+      </div>
+
+      <div id="solnsection" class="hsolnsection">
+        <select class="selectlge" id="selectlge"></select>
+        <pre class="codebox" id="codebox"></pre>
+      </div>
+    </div>
+  </body>
+</html>
