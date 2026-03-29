@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeCode Random</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <nav>
+      <a class="brand" href="dashboard.html">WeCode</a>
+      <a href="random.html" class="active">Random</a>
+      <a href="search.html">Search</a>
+      <a href="filter.html">Filter</a>
+      
+      <div class="vacuum">
+
+      </div>
+      <button class="themebutn" id="themebutn" onclick="toggleTheme()">Let there be lyte ;-)</button>
+    </nav>
+
+    <div class="page">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+        <h2 class="randomchallenge-title" style="margin:0; border:none;">Random challenge</h2>
+        <button class="newrandombutn" onclick="loadRandom()">New random</button>
+      </div>
+
+      <div id="challengediv"><p class="loading">Loading...</p></div>
+      <div class="idkyet">
+        <button class="givinup" id="giveupbtn">I give up :'(</button>
+      </div>
+
+      <div id="solnsection" class="hsolnsection">
+        <select class="selectlge" id="selectlge"></select>
+        <pre class="codebox" id="codebox"></pre>
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+      WeCode Filter
+    </title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+
+    <nav>
+      <a class="brand" href="dashboard.html">WeCode</a>
+      <a href="random.html">Random</a>
+      <a href="search.html">Search</a>
+      <a href="filter.html" class="active">Filter</a>
+
+      <div class="spacer"></div>
+      <button class="themebutn" id="themebutn" onclick="toggleTheme()">Let there be lyte ;-)</button>
+    </nav>
+
+    <div class="page">
+      <h2 class="FBDbutn">Filter by difficulty</h2>
+
+      <div class="filterrow">
+        <button class="filterchoicebutn" data-diff="Beginner" onclick="filterBy('Beginner')">Beginner</button>
+
+        <button class="filterchoicebutn" data-diff="Intermediate" onclick="filterBy('Intermediate')">Intermediate</button>
+
+        <button class="filterchoicebutn" data-diff="Expert" onclick="filterBy('Expert')">Expert</button>
+
+      </div>
+      
+      <div id="challengelist"></div>
+    </div>
+
+  </body>
+</html>

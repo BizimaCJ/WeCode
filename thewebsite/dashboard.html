@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WeCode Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <nav>
+      <a class="brand" href="dashboard.html">WeCode</a>
+      <a href="random.html">Random</a>
+      <a href="search.html">Search</a>
+      <a href="filter.html">Filter</a>
+      <div class="spacer"></div>
+      
+      <button class="themebutn" id="themebutn" onclick="toggleTheme()">
+        Let there be lyte ;-)
+      </button>
+    </nav>
+
+    <div class="page">
+      <h2 class="DRSFCtitles">Dashboard</h2>
+      <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px">
+        Pick a challenge or browse by difficulty. Solutions are hidden until you officialy give up (I'd very much rather you keep trying tho ^_^).
+      </p>
+
+      <div class="card-row">
+        <a class="card" href="random.html">
+          <h3>Random challenge</h3>
+          <p>Get a random programming challenge.</p>
+        </a>
+
+        <a class="card" href="search.html">
+          <h3>Search</h3>
+          <p>Search for a challenge.</p>
+        </a>
+
+        <a class="card" href="filter.html">
+          <h3>Filter by difficulty</h3>
+          <p>Browse basede on how hard you want them to be.</p>
+        </a>
+
+      </div>
+    </div>
+
+  </body>
+</html>
