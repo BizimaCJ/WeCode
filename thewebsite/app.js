@@ -1,8 +1,9 @@
+let currentsection = 'landing';
+let currentchallenge = null;
+
 const BASE = 'https://programming-challenges.p.rapidapi.com';
 const hdrs = { 'x-rapidapi-key': RAPIDAPI_KEY, 'x-rapidapi-host': RAPIDAPI_HOST };
 
-let currentsection = 'landing';
-let currentchallenge = null;
 
 function settheme(t) {
   document.body.classList.toggle('lightmode', t === 'Let there be lyte ;)');
@@ -159,7 +160,7 @@ async function initsearchdropdown() {
   if (sel.options.length > 1) return;
 
   try {
-    const data = await apifetch('/api/ziza/programming-challenges');
+    const data = await apifetch('/api/ziza/programming-challenges/get/all');
     data.forEach(c => {
       const opt = document.createElement('option');
       opt.value = c.id;
@@ -189,7 +190,7 @@ async function dosearch() {
     if (dropval) {
       found = await apifetch(`/api/ziza/programming-challenges/single/${dropval}`);
     } else if (txt) {
-      const all = await apifetch('/api/ziza/programming-challenges');
+      const all = await apifetch('/api/ziza/programming-challenges/get/all');
       found = all.find(c => c.Challenge.toLowerCase().includes(txt.toLowerCase()));
 
     }
@@ -248,9 +249,7 @@ async function filterby(difficulty) {
   const listdiv = document.getElementById('filterlistid');
   listdiv.innerHTML = '<p class="loadingmsg">loading...</p>';
   document.querySelectorAll('.filterbutn').forEach(b => b.classList.remove('activefilter'));
-  const activebtn = document.querySelector(`.filterbutn[data-diff="$
-  
-    {difficulty}"]`);
+  const activebtn = document.querySelector(`.filterbutn[data-diff="${difficulty}"]`);
   if (activebtn) activebtn.classList.add('activefilter');
   
   try {

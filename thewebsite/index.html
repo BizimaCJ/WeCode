@@ -90,7 +90,23 @@
       </div>
 
       <div class="idkyet">
-        <button class="givinup" id="giveupbtnid">I give up :'(</button>
+        <button class="trybutn" id="trybtnid" onclick="showtryeditor('random')">Try this out</button>
+      </div>
+      <div class="codeeditorwrap sectionhidden" id="editorwrapid">
+          <div class="editorlabelrow">
+              <span class="editorlabel">Your JS solution</span>
+          </div>
+          <textarea class="codearea" id="codeareaid" spellcheck="false"
+              placeholder="// write your JavaScript solution here..."></textarea>
+          <div class="editorbtnsrow">
+              <button class="runbutn" onclick="runcode('random')">run</button>
+              <button class="givinup" id="giveupbtnid" onclick="showsolution('random')">I give up :'(</button>
+          </div>
+          <div class="testresultswrap" id="testresultswrapid"></div>
+      </div>
+      <div class="solutionwrap sectionhidden" id="solutionwrapid">
+          <select class="selectlge" id="selectlgeid"></select>
+          <pre class="coderesult" id="coderesultid"></pre>
       </div>
 
       <div class="solutionwrap sectionhidden" id="solutionwrapid">
@@ -109,7 +125,7 @@
         <input class="searchinput" id="searchinputid" type="text"
           placeholder="type a challenge name...">
 
-        <select class="searchdropdown" id="challengedropdownid">
+        <select class="searchdropdown" id="challengedropdownid" onchange="dosearch()">
           <option value="">Or pick from this list</option>
         </select>
 
@@ -131,7 +147,23 @@
       </div>
 
       <div class="idkyet">
-        <button class="givinup" id="searchgiveupbtnid">I give up :'(</button>
+          <button class="trybutn" id="searchtrybtnid" onclick="showtryeditor('search')">try this out</button>
+      </div>
+      <div class="codeeditorwrap sectionhidden" id="searcheditorwrapid">
+          <div class="editorlabelrow">
+              <span class="editorlabel">your javascript solution</span>
+          </div>
+          <textarea class="codearea" id="searchcodeareaid" spellcheck="false"
+              placeholder="// write your JavaScript solution here..."></textarea>
+          <div class="editorbtnsrow">
+              <button class="runbutn" onclick="runcode('search')">run</button>
+              <button class="givinup" id="searchgiveupbtnid" onclick="showsolution('search')">i give up</button>
+          </div>
+          <div class="testresultswrap" id="searchtestresultswrapid"></div>
+      </div>
+      <div class="solutionwrap sectionhidden" id="searchsolutionwrapid">
+          <select class="selectlge" id="searchselectlgeid"></select>
+          <pre class="coderesult" id="searchcoderesultid"></pre>
       </div>
 
       <div class="solutionwrap sectionhidden" id="searchsolutionwrapid">
@@ -175,8 +207,23 @@
       </div>
 
       <div class="idkyet">
-        <button class="givinup" id="detailgiveupbtnid">I give up :'(</button>
-
+          <button class="trybutn" id="detailtrybtnid" onclick="showtryeditor('detail')">Try this out</button>
+      </div>
+      <div class="codeeditorwrap sectionhidden" id="detaileditorwrapid">
+          <div class="editorlabelrow">
+              <span class="editorlabel">Your JS solution</span>
+          </div>
+          <textarea class="codearea" id="detailcodeareaid" spellcheck="false"
+              placeholder="// write your JavaScript solution here..."></textarea>
+          <div class="editorbtnsrow">
+              <button class="runbutn" onclick="runcode('detail')">Run</button>
+              <button class="givinup" id="detailgiveupbtnid" onclick="showsolution('detail')">I give up :'(</button>
+          </div>
+          <div class="testresultswrap" id="detailtestresultswrapid"></div>
+      </div>
+      <div class="solutionwrap sectionhidden" id="detailsolutionwrapid">
+          <select class="selectlge" id="detailselectlgeid"></select>
+          <pre class="coderesult" id="detailcoderesultid"></pre>
       </div>
 
       <div class="solutionwrap sectionhidden" id="detailsolutionwrapid">
