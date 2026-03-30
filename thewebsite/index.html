@@ -1,23 +1,191 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>WeCode</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css">
   </head>
 
   <body>
-    <div class="landing">
+  
+  <nav class="navwrap sectionhidden" id="navwrapid">
+    <span class="navlogotext" onclick="showsection('dashboard')">WeCode</span>
+    <div class="navlinks">
+
+      <button class="navlinkitem" data-section="dashboard" onclick="showsection('dashboard')">Dashboard</button>
+
+      <button class="navlinkitem" data-section="randomsection" onclick="loadrandom()">Random</button>
+
+      <button class="navlinkitem" data-section="searchsection"
+      onclick="showsection('searchsection'); initsearchdropdown();">Search</button>
+
+      <button class="navlinkitem" data-section="filtersection" onclick="showsection('filtersection')">Filter</button>
+    </div>
+
+    <div class="navright">
+      <button class="themebutn" id="themebutnid" onclick="toggletheme()">Let there be lyte ;)</button>
+
+    </div>
+  </nav>
+
+
+  <div class="appsection" id="landing">
+    <div class="landingwrap">
       <div class="landingbox">
 
-        <h1>WeCode</h1>
-        <p>Where your coding skills are tested.</p>
-        <a href="dashboard.html" class="btn btn-primary">Get started</a>
+        <div class="wecodelogo">WeCode</div>
+
+        <p class="landingtagline">#DoHardThings by choice</p>
+        <button class="startbutn" onclick="getstarted()">Get Started</button>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="appsection sectionhidden" id="dashboard">
+    <div class="pageinner">
+      <h1 class="pagetitle">Dashboard</h1>
+      <p style="color:var(--textmuted); font-size:12px; margin-top:8px;">
+        Pick a challenge or browse by difficulty. Solutions stay hidden until you give up. No what I would advise you, but alas, life happens and sometimes you just gotta see the damn solution.
+      </p>
+
+      <div class="dashcardrow">
+        <div class="dashcard" onclick="loadrandom()">
+          <h3>Random challenge</h3>
+          <p>Get a random programming challenge from the database. You get lucky or question your life choices.</p>
+        </div>
+
+        <div class="dashcard" onclick="showsection('searchsection'); initsearchdropdown();">
+          <h3>Search</h3>
+          <p>Search by name or pick from the list.</p>
+        </div>
+
+        <div class="dashcard" onclick="showsection('filtersection')">
+          <h3>Filter by difficulty</h3>
+          <p>Browse Beginner, Intermediate, or Expert challenges.</p>
+        </div>
 
       </div>
     </div>
-  </body>
+  </div>
 
+  <div class="appsection sectionhidden" id="randomsection">
+    <div class="pageinner">
+      <div class="challengetopbar">
+        <h1 class="pagetitle" style="border:none; margin:0;">Random challenge</h1>
+        <button class="newrandombutn" onclick="loadrandom()">New random</button>
+      </div>
+
+      <div class="challengetoprow">
+        <h2 id="challengetitleid">Loading...</h2>
+        <span class="diffbadge" id="challengebadgeid"></span>
+      </div>
+
+      <p class="descriptiontxt" id="challengedescid"></p>
+      <div class="testcasesblock">
+        <p class="testcaseslabel">Test cases</p>
+
+        <div id="testcaseswrapid"></div>
+      </div>
+
+      <div class="idkyet">
+        <button class="givinup" id="giveupbtnid">I give up :'(</button>
+      </div>
+
+      <div class="solutionwrap sectionhidden" id="solutionwrapid">
+        <select class="selectlge" id="selectlgeid"></select>
+        <pre class="coderesult" id="coderesultid"></pre>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="appsection sectionhidden" id="searchsection">
+    <div class="pageinner">
+      <h1 class="pagetitle">Search challenges</h1>
+      <div class="searchrow">
+        <input class="searchinput" id="searchinputid" type="text"
+          placeholder="type a challenge name...">
+
+        <select class="searchdropdown" id="challengedropdownid">
+          <option value="">Or pick from this list</option>
+        </select>
+
+        <button class="searchgobutn" onclick="dosearch()">Search</button>
+      </div>
+
+      <p id="searchresultid" class="loadingmsg"></p>
+
+      <div class="challengetoprow">
+        <h2 id="searchchallengetitleid"></h2>
+        <span class="diffbadge" id="searchchallengebadgeid"></span>
+      </div>
+      <p class="descriptiontxt" id="searchchallengedescid"></p>
+
+      <div class="testcasesblock">
+        <p class="testcaseslabel">Test cases</p>
+        <div id="searchtestcaseswrapid"></div>
+
+      </div>
+
+      <div class="idkyet">
+        <button class="givinup" id="searchgiveupbtnid">I give up :'(</button>
+      </div>
+
+      <div class="solutionwrap sectionhidden" id="searchsolutionwrapid">
+        <select class="selectlge" id="searchselectlgeid"></select>
+        <pre class="coderesult" id="searchcoderesultid"></pre>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="appsection sectionhidden" id="filtersection">
+    <div class="pageinner">
+      <h1 class="pagetitle">Filter by difficulty</h1>
+      <div class="filterbtnrow">
+        <button class="filterbutn" data-diff="Beginner"
+          onclick="filterby('Beginner')">Beginner</button>
+        <button class="filterbutn" data-diff="Intermediate"
+          onclick="filterby('Intermediate')">Intermediate</button>
+
+        <button class="filterbutn" data-diff="Expert"
+          onclick="filterby('Expert')">Expert</button>
+    </div>
+    <div class="challengelistwrap" id="filterlistid"></div>
+    </div>
+  </div>
+
+  <div class="appsection sectionhidden" id="challengedetailsection">
+    <div class="pageinner">
+      <div class="challengetopbar">
+        <button class="backlink" onclick="history.back()">&larr; back</button>
+      </div>
+
+      <div class="challengetoprow">
+        <h2 id="detailtitleid"></h2>
+        <span class="diffbadge" id="detailbadgeid"></span>
+      </div>
+      <p class="descriptiontxt" id="detaildescid"></p>
+      <div class="testcasesblock">
+        <p class="testcaseslabel">Test cases</p>
+        <div id="detailtestcaseswrapid"></div>
+      </div>
+
+      <div class="idkyet">
+        <button class="givinup" id="detailgiveupbtnid">I give up :'(</button>
+
+      </div>
+
+      <div class="solutionwrap sectionhidden" id="detailsolutionwrapid">
+        <select class="selectlge" id="detailselectlgeid"></select>
+        <pre class="coderesult" id="detailcoderesultid"></pre>
+      </div>
+    </div>
+  </div>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+  </body>
 </html>
