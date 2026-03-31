@@ -352,6 +352,7 @@ body.lightmode .navwrap {
   margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-style: italic;
 }
 
 .testcasebox {
@@ -524,7 +525,8 @@ body.lightmode .navwrap {
   font-size: 11px;
   color: var(--green);
   letter-spacing: 0.5px;
-  text-transform: uppercase;
+  text-transform: lowercase;
+  font-style: italic;
 }
 
 .codearea {

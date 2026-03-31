@@ -6,38 +6,56 @@ let localchallenges = null;
 let previoussection = 'filtersection';
 
 const BASE = 'https://programming-challenges.p.rapidapi.com';
-const hdrs = { 'x-rapidapi-key': RAPIDAPI_KEY, 'x-rapidapi-host': RAPIDAPI_HOST };
+const hdrs = {
+  'x-rapidapi-key': RAPIDAPI_KEY,
+  'x-rapidapi-host': RAPIDAPI_HOST
+};
 
-
+// theme stuff
 function settheme(t) {
   document.body.classList.toggle('lightmode', t === 'Let there be lyte ;)');
   localStorage.setItem('theme', t);
-  const btn = document.getElementById('themebutnid');
+  var btn = document.getElementById('themebutnid');
   if (btn) btn.textContent = t === 'Let there be lyte ;)' ? 'Let it be dark' : 'Let there be lyte ;)';
 }
 
 function inittheme() {
-  settheme(localStorage.getItem('theme') || 'Let it be dark');
+  var saved = localStorage.getItem('theme');
+  settheme(saved || 'Let it be dark');
 }
 
 function toggletheme() {
-  settheme(localStorage.getItem('theme') === 'Let there be lyte ;)' ? 'Let it be dark' : 'Let there be lyte ;)');
+  var cur = localStorage.getItem('theme');
+  if (cur === 'Let there be lyte ;)') {
+    settheme('Let it be dark');
+  } else {
+    settheme('Let there be lyte ;)');
+  }
 }
 
-
+// show the right section and hide everything else
 function showsection(id) {
-  document.querySelectorAll('.appsection').forEach(s => s.classList.add('sectionhidden'));
-  const target = document.getElementById(id);
+  var all = document.querySelectorAll('.appsection');
+  for (var i = 0; i < all.length; i++) {
+    all[i].classList.add('sectionhidden');
+  }
+
+  var target = document.getElementById(id);
   if (target) target.classList.remove('sectionhidden');
 
-  document.querySelectorAll('.navlinkitem').forEach(l => l.classList.remove('activenav'));
-  const activelink = document.querySelector(`.navlinkitem[data-section="${id}"]`);
+  var navlinks = document.querySelectorAll('.navlinkitem');
+  for (var i = 0; i < navlinks.length; i++) {
+    navlinks[i].classList.remove('activenav');
+  }
+
+  var activelink = document.querySelector('.navlinkitem[data-section="' + id + '"]');
   if (activelink) activelink.classList.add('activenav');
 
+  var nav = document.getElementById('navwrapid');
   if (id === 'landing') {
-    document.getElementById('navwrapid').classList.add('sectionhidden');
+    nav.classList.add('sectionhidden');
   } else {
-    document.getElementById('navwrapid').classList.remove('sectionhidden');
+    nav.classList.remove('sectionhidden');
   }
 
   localStorage.setItem('lastsection', id);
@@ -48,11 +66,11 @@ function getstarted() {
   showsection('dashboard');
 }
 
-
+// i wrote this so the app doesnt fully break when api runs out
 async function loadlocalchallenges() {
   if (localchallenges) return localchallenges;
   try {
-    const r = await fetch('challenges.json');
+    var r = await fetch('challenges.json');
     if (!r.ok) return null;
     localchallenges = await r.json();
     return localchallenges;
@@ -62,154 +80,164 @@ async function loadlocalchallenges() {
 }
 
 async function apifetch(endpoint) {
-  const r = await fetch(BASE + endpoint, { headers: hdrs });
-  if (!r.ok) throw new Error('api ' + r.status);
+  var r = await fetch(BASE + endpoint, { headers: hdrs });
+  if (!r.ok) throw new Error('api error: ' + r.status);
   return r.json();
 }
 
+// tries the api first, falls back to local json if it fails
 async function apifetchWithFallback(endpoint, fallbackfn) {
   try {
     return await apifetch(endpoint);
   } catch(e) {
-    const local = await loadlocalchallenges();
+    var local = await loadlocalchallenges();
     if (!local) throw e;
     return fallbackfn(local);
   }
 }
 
-
 function eschtml(s) {
   return String(s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function badgeclass(diff) {
   if (!diff) return '';
-  const d = diff.toLowerCase();
+  var d = diff.toLowerCase();
   if (d === 'beginner') return 'diffbeginner';
   if (d === 'intermediate') return 'diffintermediate';
   return 'diffexpert';
 }
 
+// the api returns solution as an array with one object inside
+// dumb ways to die 
 function getsolutions(data) {
-  const raw = data.solution;
-  return Array.isArray(raw) ? raw[0] : (raw || {});
+  var raw = data.solution;
+  if (Array.isArray(raw)) return raw[0];
+  return raw || {};
 }
 
-function rendertestcases(tcwrap, testCases) {
-  tcwrap.innerHTML = '';
-  (testCases || []).forEach(t => {
-    const box = document.createElement('div');
+function rendertestcases(wrap, testCases) {
+  wrap.innerHTML = '';
+  var cases = testCases || [];
+  for (var i = 0; i < cases.length; i++) {
+    var box = document.createElement('div');
     box.className = 'testcasebox';
-    box.innerHTML = `input: <span>${eschtml(t.input)}</span> &nbsp; output: <span>${eschtml(t.output)}</span>`;
-    tcwrap.appendChild(box);
-  });
+    box.innerHTML = 'input: <span>' + eschtml(cases[i].input) + '</span> &nbsp; output: <span>' + eschtml(cases[i].output) + '</span>';
+    wrap.appendChild(box);
+  }
 }
 
+// confetti when all tests pass :)
 function spawnconfetti() {
-  const colors = ['#4a8ef5', '#3fb950', '#d4a020', '#a78bfa', '#f97316'];
-  const wrap = document.createElement('div');
+  var colors = ['#4a8ef5', '#3fb950', '#d4a020', '#a78bfa', '#f97316'];
+  var wrap = document.createElement('div');
   wrap.className = 'confettiwrap';
   document.body.appendChild(wrap);
 
-  for (let i = 0; i < 120; i++) {
-    const piece = document.createElement('div');
+  for (var i = 0; i < 120; i++) {
+    var piece = document.createElement('div');
     piece.className = 'confettipiece';
-    piece.style.cssText = `
-      left: ${Math.random() * 100}vw;
-      background: ${colors[Math.floor(Math.random() * colors.length)]};
-      width: ${6 + Math.random() * 8}px;
-      height: ${6 + Math.random() * 8}px;
-      animation-delay: ${Math.random() * 0.8}s;
-      animation-duration: ${1.8 + Math.random() * 1.4}s;
-      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
-      opacity: ${0.7 + Math.random() * 0.3};
-    `;
+    piece.style.left = (Math.random() * 100) + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.width = (6 + Math.random() * 8) + 'px';
+    piece.style.height = piece.style.width;
+    piece.style.animationDelay = (Math.random() * 0.8) + 's';
+    piece.style.animationDuration = (1.8 + Math.random() * 1.4) + 's';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    piece.style.opacity = 0.7 + Math.random() * 0.3;
     wrap.appendChild(piece);
   }
 
-  setTimeout(() => wrap.remove(), 4000);
+  setTimeout(function() { wrap.remove(); }, 4000);
 }
-
 
 function fillchallenge(data) {
   if (!data || data.error) {
-    document.getElementById('challengetitleid').textContent = '';
     document.getElementById('challengedescid').textContent = 'Could not load. Check your API key. You probably exhausted your quota XD';
     return;
   }
+
   currentchallenge = data;
   localStorage.setItem('lastchallengeid', data.id);
 
   document.getElementById('challengetitleid').textContent = data.Challenge || '';
-  const badge = document.getElementById('challengebadgeid');
+
+  var badge = document.getElementById('challengebadgeid');
   badge.textContent = data.difficulty || '';
   badge.className = 'diffbadge ' + badgeclass(data.difficulty);
+
   document.getElementById('challengedescid').textContent = data.description || '';
 
   rendertestcases(document.getElementById('testcaseswrapid'), data.testCases);
 
-  const solutions = getsolutions(data);
-  const sel = document.getElementById('selectlgeid');
+  var solutions = getsolutions(data);
+  var sel = document.getElementById('selectlgeid');
   sel.innerHTML = '';
-  Object.keys(solutions).forEach(l => {
-    const opt = document.createElement('option');
-    opt.value = l; opt.textContent = l;
+  var langs = Object.keys(solutions);
+  for (var i = 0; i < langs.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = langs[i];
+    opt.textContent = langs[i];
     sel.appendChild(opt);
-  });
+  }
 
+  // reset editor and solution state
   document.getElementById('trybtnid').classList.remove('sectionhidden');
   document.getElementById('editorwrapid').classList.add('sectionhidden');
   document.getElementById('solutionwrapid').classList.add('sectionhidden');
   document.getElementById('codeareaid').value = '';
   document.getElementById('testresultswrapid').innerHTML = '';
 
-  sel.onchange = () => {
+  sel.onchange = function() {
     document.getElementById('coderesultid').textContent = solutions[sel.value] || 'no solution for this language';
   };
 }
-
 
 async function loadrandom() {
   document.getElementById('challengetitleid').textContent = '';
   document.getElementById('challengedescid').textContent = 'summoning something you probably cannot solve...';
   document.getElementById('testcaseswrapid').innerHTML = '';
   showsection('randomsection');
+
   try {
-    const data = await apifetchWithFallback(
+    var data = await apifetchWithFallback(
       '/api/ziza/programming-challenges/get/single/random',
-      local => local[Math.floor(Math.random() * local.length)]
+      function(local) { return local[Math.floor(Math.random() * local.length)]; }
     );
     fillchallenge(data);
   } catch(e) {
-    document.getElementById('challengetitleid').textContent = '';
     document.getElementById('challengedescid').textContent = 'Could not load. Check your API key. You probably exhausted your quota XD';
   }
 }
 
-
 async function initsearchdropdown() {
-  const sel = document.getElementById('challengedropdownid');
+  var sel = document.getElementById('challengedropdownid');
   if (sel.options.length > 1) return;
+
   try {
-    const data = await apifetchWithFallback(
-      '/api/ziza/programming-challenges/get/all',
-      local => local
+    var data = await apifetchWithFallback(
+      '/api/ziza/programming-challenges',
+      function(local) { return local; }
     );
-    data.forEach(c => {
-      const opt = document.createElement('option');
-      opt.value = c.id;
-      opt.textContent = c.Challenge;
+    for (var i = 0; i < data.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = data[i].id;
+      opt.textContent = data[i].Challenge;
       sel.appendChild(opt);
-    });
-  } catch(e) {}
+    }
+  } catch(e) {
+    // if the api fails, we can still search by fetching all challenges from local json and filtering in the search function, so no need to do anything here
+  }
 }
 
 async function dosearch() {
-  const txt = document.getElementById('searchinputid').value.trim();
-  const dropval = document.getElementById('challengedropdownid').value;
-  const resultbox = document.getElementById('searchresultid');
+  var txt = document.getElementById('searchinputid').value.trim();
+  var dropval = document.getElementById('challengedropdownid').value;
+  var resultbox = document.getElementById('searchresultid');
   resultbox.textContent = 'searching the void...';
 
   document.getElementById('searchchallengetitleid').textContent = '';
@@ -221,20 +249,26 @@ async function dosearch() {
   document.getElementById('searchtestresultswrapid').innerHTML = '';
 
   try {
-    let found;
+    var found;
     if (dropval) {
       found = await apifetchWithFallback(
-        `/api/ziza/programming-challenges/single/${dropval}`,
-        local => local.find(c => c.id === dropval)
+        '/api/ziza/programming-challenges/single/' + dropval,
+        function(local) { return local.find(function(c) { return c.id === dropval; }); }
       );
     } else if (txt) {
-      const all = await apifetchWithFallback(
-        '/api/ziza/programming-challenges/get/all',
-        local => local
+      var all = await apifetchWithFallback(
+        '/api/ziza/programming-challenges',
+        function(local) { return local; }
       );
-      found = all.find(c => c.Challenge.toLowerCase().includes(txt.toLowerCase()));
+      found = all.find(function(c) {
+        return c.Challenge.toLowerCase().includes(txt.toLowerCase());
+      });
     }
-    if (!found) { resultbox.textContent = 'nothing found. maybe try spelling it right.'; return; }
+
+    if (!found) {
+      resultbox.textContent = 'nothing found. maybe try spelling it right.';
+      return;
+    }
     resultbox.textContent = '';
     fillsearchchallenge(found);
   } catch(e) {
@@ -247,21 +281,25 @@ function fillsearchchallenge(data) {
   localStorage.setItem('lastchallengeid', data.id);
 
   document.getElementById('searchchallengetitleid').textContent = data.Challenge || '';
-  const badge = document.getElementById('searchchallengebadgeid');
+
+  var badge = document.getElementById('searchchallengebadgeid');
   badge.textContent = data.difficulty || '';
   badge.className = 'diffbadge ' + badgeclass(data.difficulty);
+
   document.getElementById('searchchallengedescid').textContent = data.description || '';
 
   rendertestcases(document.getElementById('searchtestcaseswrapid'), data.testCases);
 
-  const solutions = getsolutions(data);
-  const sel = document.getElementById('searchselectlgeid');
+  var solutions = getsolutions(data);
+  var sel = document.getElementById('searchselectlgeid');
   sel.innerHTML = '';
-  Object.keys(solutions).forEach(l => {
-    const opt = document.createElement('option');
-    opt.value = l; opt.textContent = l;
+  var langs = Object.keys(solutions);
+  for (var i = 0; i < langs.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = langs[i];
+    opt.textContent = langs[i];
     sel.appendChild(opt);
-  });
+  }
 
   document.getElementById('searchtrybtnid').classList.remove('sectionhidden');
   document.getElementById('searcheditorwrapid').classList.add('sectionhidden');
@@ -269,66 +307,80 @@ function fillsearchchallenge(data) {
   document.getElementById('searchcodeareaid').value = '';
   document.getElementById('searchtestresultswrapid').innerHTML = '';
 
-  sel.onchange = () => {
+  sel.onchange = function() {
     document.getElementById('searchcoderesultid').textContent = solutions[sel.value] || '';
   };
 }
 
-
 async function filterby(difficulty) {
-  const listdiv = document.getElementById('filterlistid');
+  var listdiv = document.getElementById('filterlistid');
   listdiv.innerHTML = '<p class="loadingmsg">fetching challenges to ruin your day...</p>';
-  document.querySelectorAll('.filterbutn').forEach(b => b.classList.remove('activefilter'));
-  const activebtn = document.querySelector(`.filterbutn[data-diff="${difficulty}"]`);
+
+  var allbtns = document.querySelectorAll('.filterbutn');
+  for (var i = 0; i < allbtns.length; i++) {
+    allbtns[i].classList.remove('activefilter');
+  }
+  var activebtn = document.querySelector('.filterbutn[data-diff="' + difficulty + '"]');
   if (activebtn) activebtn.classList.add('activefilter');
 
   try {
-    const data = await apifetchWithFallback(
-      `/api/ziza/programming-challenges/get/difficulty/${difficulty}`,
-      local => local.filter(c => c.difficulty === difficulty)
+    var data = await apifetchWithFallback(
+      '/api/ziza/programming-challenges/get/difficulty/' + difficulty,
+      function(local) {
+        return local.filter(function(c) { return c.difficulty === difficulty; });
+      }
     );
-    if (!data.length) { listdiv.innerHTML = '<p class="errormsg">no challenges found. suspiciously convenient.</p>'; return; }
+
+    if (!data.length) {
+      listdiv.innerHTML = '<p class="errormsg">no challenges found. suspiciously convenient.</p>';
+      return;
+    }
+
     listdiv.innerHTML = '';
-    data.forEach(c => {
-      const item = document.createElement('div');
+    for (var i = 0; i < data.length; i++) {
+      var item = document.createElement('div');
       item.className = 'challengelistitem';
-      item.innerHTML = `<span class="itemname">${eschtml(c.Challenge)}</span>
-        <span class="diffbadge ${badgeclass(c.difficulty)}">${eschtml(c.difficulty)}</span>`;
-      item.onclick = () => loadchallengebyid(c.id);
+      item.innerHTML = '<span class="itemname">' + eschtml(data[i].Challenge) + '</span><span class="diffbadge ' + badgeclass(data[i].difficulty) + '">' + eschtml(data[i].difficulty) + '</span>';
+      // need this wrapper to keep the id in scope
+      (function(id) {
+        item.onclick = function() { loadchallengebyid(id); };
+      })(data[i].id);
       listdiv.appendChild(item);
-    });
+    }
   } catch(e) {
     listdiv.innerHTML = '<p class="errormsg">failed to load. not your fault. probably.</p>';
   }
 }
-
 
 function filldetailchallenge(data) {
   detailchallenge = data;
   currentchallenge = data;
 
   if (!data || data.error) {
-    document.getElementById('detailtitleid').textContent = '';
     document.getElementById('detaildescid').textContent = 'Could not load challenge';
     return;
   }
 
   document.getElementById('detailtitleid').textContent = data.Challenge || '';
-  const badge = document.getElementById('detailbadgeid');
+
+  var badge = document.getElementById('detailbadgeid');
   badge.textContent = data.difficulty || '';
   badge.className = 'diffbadge ' + badgeclass(data.difficulty);
+
   document.getElementById('detaildescid').textContent = data.description || '';
 
   rendertestcases(document.getElementById('detailtestcaseswrapid'), data.testCases);
 
-  const solutions = getsolutions(data);
-  const sel = document.getElementById('detailselectlgeid');
+  var solutions = getsolutions(data);
+  var sel = document.getElementById('detailselectlgeid');
   sel.innerHTML = '';
-  Object.keys(solutions).forEach(l => {
-    const opt = document.createElement('option');
-    opt.value = l; opt.textContent = l;
+  var langs = Object.keys(solutions);
+  for (var i = 0; i < langs.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = langs[i];
+    opt.textContent = langs[i];
     sel.appendChild(opt);
-  });
+  }
 
   document.getElementById('detailtrybtnid').classList.remove('sectionhidden');
   document.getElementById('detaileditorwrapid').classList.add('sectionhidden');
@@ -336,7 +388,7 @@ function filldetailchallenge(data) {
   document.getElementById('detailcodeareaid').value = '';
   document.getElementById('detailtestresultswrapid').innerHTML = '';
 
-  sel.onchange = () => {
+  sel.onchange = function() {
     document.getElementById('detailcoderesultid').textContent = solutions[sel.value] || '';
   };
 }
@@ -344,77 +396,87 @@ function filldetailchallenge(data) {
 async function loadchallengebyid(id) {
   previoussection = currentsection;
   showsection('challengedetailsection');
+
   document.getElementById('detailtitleid').textContent = '';
   document.getElementById('detaildescid').textContent = 'loading your next mistake...';
   document.getElementById('detailtestcaseswrapid').innerHTML = '';
+
   try {
-    const data = await apifetchWithFallback(
-      `/api/ziza/programming-challenges/single/${id}`,
-      local => local.find(c => c.id === id || c.id === String(id))
+    var data = await apifetchWithFallback(
+      '/api/ziza/programming-challenges/single/' + id,
+      function(local) {
+        return local.find(function(c) { return c.id === id || c.id === String(id); });
+      }
     );
     filldetailchallenge(data);
   } catch(e) {
-    document.getElementById('detailtitleid').textContent = '';
     document.getElementById('detaildescid').textContent = 'Could not load challenge';
   }
 }
 
-
 function showtryeditor(section) {
-  const editormap = { random: 'editorwrapid', search: 'searcheditorwrapid', detail: 'detaileditorwrapid' };
-  const btnmap = { random: 'trybtnid', search: 'searchtrybtnid', detail: 'detailtrybtnid' };
-  const wrap = document.getElementById(editormap[section]);
-  const btn = document.getElementById(btnmap[section]);
+  var editors = { random: 'editorwrapid', search: 'searcheditorwrapid', detail: 'detaileditorwrapid' };
+  var btns = { random: 'trybtnid', search: 'searchtrybtnid', detail: 'detailtrybtnid' };
+
+  var wrap = document.getElementById(editors[section]);
+  var btn = document.getElementById(btns[section]);
   if (!wrap) return;
+
   wrap.classList.remove('sectionhidden');
   if (btn) btn.classList.add('sectionhidden');
 }
 
 function showsolution(section) {
-  const solmap = { random: 'solutionwrapid', search: 'searchsolutionwrapid', detail: 'detailsolutionwrapid' };
-  const editormap = { random: 'editorwrapid', search: 'searcheditorwrapid', detail: 'detaileditorwrapid' };
-  const giveupmap = { random: 'giveupbtnid', search: 'searchgiveupbtnid', detail: 'detailgiveupbtnid' };
-  const selmap = { random: 'selectlgeid', search: 'searchselectlgeid', detail: 'detailselectlgeid' };
-  const codemap = { random: 'coderesultid', search: 'searchcoderesultid', detail: 'detailcoderesultid' };
+  var solmap = { random: 'solutionwrapid', search: 'searchsolutionwrapid', detail: 'detailsolutionwrapid' };
+  var editormap = { random: 'editorwrapid', search: 'searcheditorwrapid', detail: 'detaileditorwrapid' };
+  var giveupmap = { random: 'giveupbtnid', search: 'searchgiveupbtnid', detail: 'detailgiveupbtnid' };
+  var selmap = { random: 'selectlgeid', search: 'searchselectlgeid', detail: 'detailselectlgeid' };
+  var codemap = { random: 'coderesultid', search: 'searchcoderesultid', detail: 'detailcoderesultid' };
 
-  const solwrap = document.getElementById(solmap[section]);
-  const editorwrap = document.getElementById(editormap[section]);
-  const giveupbtn = document.getElementById(giveupmap[section]);
-  const sel = document.getElementById(selmap[section]);
-  const codebox = document.getElementById(codemap[section]);
+  var solwrap = document.getElementById(solmap[section]);
+  var editorwrap = document.getElementById(editormap[section]);
+  var giveupbtn = document.getElementById(giveupmap[section]);
+  var sel = document.getElementById(selmap[section]);
+  var codebox = document.getElementById(codemap[section]);
 
   if (solwrap) solwrap.classList.remove('sectionhidden');
   if (editorwrap) editorwrap.classList.add('sectionhidden');
   if (giveupbtn) giveupbtn.classList.add('sectionhidden');
 
-  const challenge = section === 'search' ? searchchallenge : section === 'detail' ? detailchallenge : currentchallenge;
+  var challenge = section === 'search' ? searchchallenge : section === 'detail' ? detailchallenge : currentchallenge;
   if (!challenge) return;
 
-  const solutions = getsolutions(challenge);
-  const langs = Object.keys(solutions);
+  var solutions = getsolutions(challenge);
+  var langs = Object.keys(solutions);
   if (!langs.length) return;
 
   if (sel) {
-    sel.innerHTML = '<option value="">fine. pick a language and witness what you should have written.</option>';
-    langs.forEach(l => {
-      const opt = document.createElement('option');
-      opt.value = l; opt.textContent = l;
+    sel.innerHTML = '';
+    for (var i = 0; i < langs.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = langs[i];
+      opt.textContent = langs[i];
       sel.appendChild(opt);
-    });
+    }
     sel.value = langs[0];
-    sel.onchange = () => {
-      if (codebox) codebox.textContent = solutions[sel.value] || '';
+
+    // keep reference for onchange
+    var solutionsref = solutions;
+    var codeboxref = codebox;
+    sel.onchange = function() {
+      if (codeboxref) codeboxref.textContent = solutionsref[sel.value] || '';
     };
   }
+
   if (codebox) codebox.textContent = solutions[langs[0]] || '';
 }
 
 function runcode(section) {
-  const areamap = { random: 'codeareaid', search: 'searchcodeareaid', detail: 'detailcodeareaid' };
-  const resultmap = { random: 'testresultswrapid', search: 'searchtestresultswrapid', detail: 'detailtestresultswrapid' };
+  var areamap = { random: 'codeareaid', search: 'searchcodeareaid', detail: 'detailcodeareaid' };
+  var resultmap = { random: 'testresultswrapid', search: 'searchtestresultswrapid', detail: 'detailtestresultswrapid' };
 
-  const code = document.getElementById(areamap[section]).value.trim();
-  const resultdiv = document.getElementById(resultmap[section]);
+  var code = document.getElementById(areamap[section]).value.trim();
+  var resultdiv = document.getElementById(resultmap[section]);
   resultdiv.innerHTML = '';
 
   if (!code) {
@@ -422,56 +484,61 @@ function runcode(section) {
     return;
   }
 
-  const challenge = section === 'search' ? searchchallenge : section === 'detail' ? detailchallenge : currentchallenge;
+  var challenge = section === 'search' ? searchchallenge : section === 'detail' ? detailchallenge : currentchallenge;
 
   if (!challenge || !challenge.testCases) {
-    resultdiv.innerHTML = '<p class="errormsg">no test cases available. the universe is conspiring against you.</p>';
+    resultdiv.innerHTML = '<p class="errormsg">no test cases available.</p>';
     return;
   }
 
-  let allpassed = true;
+  var allpassed = true;
 
-  challenge.testCases.forEach((tc, i) => {
+  for (var i = 0; i < challenge.testCases.length; i++) {
+    var tc = challenge.testCases[i];
     try {
-      const fn = new Function(`${code}\n return typeof solution !== 'undefined' ? solution : undefined;`)();
-      let result;
+      var fn = new Function(code + '\n return typeof solution !== "undefined" ? solution : undefined;')();
+      var result;
+
       if (typeof fn === 'function') {
-        const input = JSON.parse(tc.input);
-        result = Array.isArray(input) ? fn(...input) : fn(input);
+        var input = JSON.parse(tc.input);
+        result = Array.isArray(input) ? fn.apply(null, input) : fn(input);
       } else {
-        resultdiv.innerHTML += `<div class="testcasebox testfail">test ${i+1}: your function needs to be named <span>solution</span>. that is literally the one rule.</div>`;
+        resultdiv.innerHTML += '<div class="testcasebox testfail">test ' + (i+1) + ': your function needs to be named <span>solution</span>. that is literally the one rule.</div>';
         allpassed = false;
-        return;
+        continue;
       }
-      const expected = JSON.parse(tc.output);
-      const passed = JSON.stringify(result) === JSON.stringify(expected);
+
+      var expected = JSON.parse(tc.output);
+      var passed = JSON.stringify(result) === JSON.stringify(expected);
       if (!passed) allpassed = false;
-      resultdiv.innerHTML += `<div class="testcasebox ${passed ? 'testpass' : 'testfail'}">
-        test ${i+1}: ${passed ? 'passed, as expected from a person of your calibre' : 'failed. do not panic. do panic a little.'} &nbsp;
-        got: <span>${eschtml(String(result))}</span> &nbsp;
-        expected: <span>${eschtml(tc.output)}</span>
-      </div>`;
+
+      resultdiv.innerHTML += '<div class="testcasebox ' + (passed ? 'testpass' : 'testfail') + '">' +
+        'test ' + (i+1) + ': ' + (passed ? 'passed' : 'failed') + ' &nbsp; ' +
+        'got: <span>' + eschtml(String(result)) + '</span> &nbsp; ' +
+        'expected: <span>' + eschtml(tc.output) + '</span>' +
+        '</div>';
     } catch(err) {
       allpassed = false;
-      resultdiv.innerHTML += `<div class="testcasebox testfail">test ${i+1}: your code threw an error and honestly, same. — <span>${eschtml(err.message)}</span></div>`;
+      resultdiv.innerHTML += '<div class="testcasebox testfail">test ' + (i+1) + ': error — <span>' + eschtml(err.message) + '</span></div>';
     }
-  });
+  }
 
   if (allpassed && challenge.testCases.length > 0) {
     spawnconfetti();
-    resultdiv.innerHTML += `<div class="allpassedbanner">all test cases passed. we are as shocked as you are. genuinely did not see that coming.</div>`;
+    resultdiv.innerHTML += '<div class="allpassedbanner">all test cases passed. genuinely did not see that coming.</div>';
   }
 }
 
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
   inittheme();
-  const last = localStorage.getItem('lastsection');
+
+  var last = localStorage.getItem('lastsection');
   if (last && last !== 'landing') {
     showsection(last);
+
     if (last === 'randomsection') {
       document.getElementById('challengetitleid').textContent = '';
-      document.getElementById('challengedescid').textContent = 'Click the New Random :D button whenever you are ready to suffer.';
+      document.getElementById('challengedescid').textContent = 'Click the button whenever you are ready to suffer.';
       document.getElementById('testcaseswrapid').innerHTML = '';
       document.getElementById('editorwrapid').classList.add('sectionhidden');
       document.getElementById('solutionwrapid').classList.add('sectionhidden');
@@ -480,7 +547,10 @@ document.addEventListener('DOMContentLoaded', () => {
       initsearchdropdown();
     } else if (last === 'filtersection') {
       document.getElementById('filterlistid').innerHTML = '';
-      document.querySelectorAll('.filterbutn').forEach(b => b.classList.remove('activefilter'));
+      var btns = document.querySelectorAll('.filterbutn');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.remove('activefilter');
+      }
     }
   } else {
     showsection('landing');
