@@ -8,13 +8,13 @@ no frameworks.
 ## Submission
 
 Live URLs:
-- Load balancer:
-- web-01 direct:
-- web-02 direct:
-- Domain HTTP:
-- Domain HHTPS: 
+- Load balancer: http://3.83.152.64
+- web-01 direct: http://3.89.112.43
+- web-02 direct: http://100.26.99.147
+- Domain (HTTP): http://bizima.tech
+- Domain (HTTPS): https://www.bizima.tech 
 
-GitHub repo:
+GitHub repo: https://github.com/BizimaCJ/WeCode
 Demo video:
 
 ---
