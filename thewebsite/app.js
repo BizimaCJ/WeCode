@@ -160,7 +160,7 @@ async function initsearchdropdown() {
   if (sel.options.length > 1) return;
 
   try {
-    const data = await apifetch('/api/ziza/programming-challenges/get/all');
+    const data = await apifetch('/api/ziza/programming-challenges');
     data.forEach(c => {
       const opt = document.createElement('option');
       opt.value = c.id;
@@ -190,7 +190,7 @@ async function dosearch() {
     if (dropval) {
       found = await apifetch(`/api/ziza/programming-challenges/single/${dropval}`);
     } else if (txt) {
-      const all = await apifetch('/api/ziza/programming-challenges/get/all');
+      const all = await apifetch('/api/ziza/programming-challenges');
       found = all.find(c => c.Challenge.toLowerCase().includes(txt.toLowerCase()));
 
     }
@@ -203,6 +203,7 @@ async function dosearch() {
 }
 
 function fillsearchchallenge(data) {
+  currentchallenge = data;
   localStorage.setItem('lastchallengeid', data.id);
   document.getElementById('searchchallengetitleid').textContent = data.Challenge || '';
 
@@ -272,33 +273,46 @@ async function filterby(difficulty) {
 
 
 
-async function loadchallengebyid(id) {
-  showsection('challengedetailsection');
-  document.getElementById('challengetitleid').textContent = 'loading...';
-  document.getElementById('challengedescid').textContent = '';
-  document.getElementById('testcaseswrapid').innerHTML = '';
-  try {
-    const data = await apifetch(`/api/ziza/programming-challenges/single/${id}`);
-    fillchallenge(data);
-  } catch(e) {
-    document.getElementById('challengetitleid').textContent = 'could not load challenge';
-  }
-}
 
 //init. finally!!! show landing page
 document.addEventListener('DOMContentLoaded', () => {
- inittheme();
- showsection('landing');
+    inittheme();
+    const last = localStorage.getItem('lastsection');
+    if (last && last !== 'landing') {
+        showsection(last);
+        // reset state depending on which section we're restoring
+        if (last === 'randomsection') {
+            document.getElementById('challengetitleid').textContent = 'click new random to load a challenge';
+            document.getElementById('challengedescid').textContent = '';
+            document.getElementById('testcaseswrapid').innerHTML = '';
+            document.getElementById('editorwrapid').classList.add('sectionhidden');
+            document.getElementById('solutionwrapid').classList.add('sectionhidden');
+            document.getElementById('trybtnid').classList.remove('sectionhidden');
+            document.getElementById('giveupbtnid').classList.remove('sectionhidden');
+        } else if (last === 'searchsection') {
+            document.getElementById('searchchallengetitleid').textContent = '';
+            document.getElementById('searchchallengedescid').textContent = '';
+            document.getElementById('searchtestcaseswrapid').innerHTML = '';
+            document.getElementById('searchresultid').textContent = '';
+            document.getElementById('searchinputid').value = '';
+            document.getElementById('searcheditorwrapid').classList.add('sectionhidden');
+            document.getElementById('searchsolutionwrapid').classList.add('sectionhidden');
+            document.getElementById('searchtrybtnid').classList.remove('sectionhidden');
+            document.getElementById('searchgiveupbtnid').classList.remove('sectionhidden');
+        } else if (last === 'filtersection') {
+            document.getElementById('filterlistid').innerHTML = '';
+            document.querySelectorAll('.filterbutn').forEach(b => b.classList.remove('activefilter'));
+        }
+    } else {
+        showsection('landing');
+    }
 });
 
 
 
 
-
-
-
-
 function filldetailchallenge(data) {
+  currentchallenge = data;
     if (!data || data.error) {
         document.getElementById('detailtitleid').textContent = 'failed to load';
         return;
@@ -357,3 +371,110 @@ async function loadchallengebyid(id) {
         document.getElementById('detailtitleid').textContent = 'could not load challenge'; // <-- changed
     }
 }
+
+function showtryeditor(section) {
+    const editormap = {
+        'random': 'editorwrapid',
+        'search': 'searcheditorwrapid',
+        'detail': 'detaileditorwrapid'
+    };
+    const btnmap = {
+        'random': 'trybtnid',
+        'search': 'searchtrybtnid',
+        'detail': 'detailtrybtnid'
+    };
+    const wrap = document.getElementById(editormap[section]);
+    const btn = document.getElementById(btnmap[section]);
+    if (!wrap) return;
+    wrap.classList.remove('sectionhidden');
+    if (btn) btn.classList.add('sectionhidden');
+}
+
+function showsolution(section) {
+    const solmap = {
+        'random': 'solutionwrapid',
+        'search': 'searchsolutionwrapid',
+        'detail': 'detailsolutionwrapid'
+    };
+    const giveupmap = {
+        'random': 'giveupbtnid',
+        'search': 'searchgiveupbtnid',
+        'detail': 'detailgiveupbtnid'
+    };
+    const editormap = {
+        'random': 'editorwrapid',
+        'search': 'searcheditorwrapid',
+        'detail': 'detaileditorwrapid'
+    };
+
+    const solwrap = document.getElementById(solmap[section]);
+    const giveupbtn = document.getElementById(giveupmap[section]);
+    const editorwrap = document.getElementById(editormap[section]);
+
+    if (solwrap) solwrap.classList.remove('sectionhidden');
+    if (giveupbtn) giveupbtn.classList.add('sectionhidden');
+    if (editorwrap) editorwrap.classList.add('sectionhidden');
+
+    // fill solution using currentchallenge
+    const sectionmap = { 'random': 'selectlgeid', 'search': 'searchselectlgeid', 'detail': 'detailselectlgeid' };
+    const codemap = { 'random': 'coderesultid', 'search': 'searchcoderesultid', 'detail': 'detailcoderesultid' };
+    const sel = document.getElementById(sectionmap[section]);
+    const codebox = document.getElementById(codemap[section]);
+    if (sel && codebox && currentchallenge) {
+        const solutions = currentchallenge.solution || {};
+        codebox.textContent = solutions[sel.value] || solutions[Object.keys(solutions)[0]] || '';
+    }
+}
+
+function runcode(section) {
+    const areamap = {
+        'random': 'codeareaid',
+        'search': 'searchcodeareaid',
+        'detail': 'detailcodeareaid'
+    };
+    const resultmap = {
+        'random': 'testresultswrapid',
+        'search': 'searchtestresultswrapid',
+        'detail': 'detailtestresultswrapid'
+    };
+
+    const code = document.getElementById(areamap[section]).value.trim();
+    const resultdiv = document.getElementById(resultmap[section]);
+    resultdiv.innerHTML = '';
+
+    if (!code) {
+        resultdiv.innerHTML = '<p class="errormsg">write some code first</p>';
+        return;
+    }
+
+    if (!currentchallenge || !currentchallenge.testCases) {
+        resultdiv.innerHTML = '<p class="errormsg">no test cases available</p>';
+        return;
+    }
+
+    // run user code against test cases using eval
+    // this only works for js solutions obv
+    currentchallenge.testCases.forEach((tc, i) => {
+        try {
+            const fn = new Function(`${code}\n return typeof solution !== 'undefined' ? solution : undefined;`)();
+            let result;
+            if (typeof fn === 'function') {
+                const input = JSON.parse(tc.input);
+                result = Array.isArray(input) ? fn(...input) : fn(input);
+            } else {
+                resultdiv.innerHTML += `<div class="testcasebox"><span>test ${i+1}: make sure your function is named 'solution'</span></div>`;
+                return;
+            }
+            const expected = JSON.parse(tc.output);
+            const passed = JSON.stringify(result) === JSON.stringify(expected);
+            resultdiv.innerHTML += `<div class="testcasebox ${passed ? 'testpass' : 'testfail'}">
+                test ${i+1}: ${passed ? 'passed' : 'failed'} &nbsp;
+                got: <span>${eschtml(String(result))}</span> &nbsp;
+                expected: <span>${eschtml(tc.output)}</span>
+            </div>`;
+        } catch(err) {
+            resultdiv.innerHTML += `<div class="testcasebox testfail">test ${i+1}: error - <span>${eschtml(err.message)}</span></div>`;
+        }
+    });
+}
+

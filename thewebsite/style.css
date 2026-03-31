@@ -539,9 +539,69 @@ body.lightmode .landingbox {
     color: var(--accent);
     font-family: var(--font);
     font-size: 12px;
-    padding: 7px 18px;
+    padding: 7px 16px;
     border-radius: var(--radius);
     cursor: pointer;
     margin-top: 16px;
 }
 .trybutn:hover { background: var(--accentglow); }
+
+.codeeditorwrap {
+    margin-top: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.editorlabelrow {
+    background: var(--surface2);
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.editorlabel {
+    font-size: 11px;
+    color: var(--textmuted);
+    letter-spacing: 0.5px;
+}
+
+.codearea {
+    width: 100%;
+    min-height: 180px;
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 14px;
+    border: none;
+    outline: none;
+    resize: vertical;
+    tab-size: 4;
+}
+
+.editorbtnsrow {
+    display: flex;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+}
+
+.runbutn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    font-family: var(--font);
+    font-size: 12px;
+    padding: 6px 16px;
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+.runbutn:hover { opacity: 0.85; }
+
+.testresultswrap { padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
+
+.testpass { border-color: var(--accent) !important; color: var(--accent) !important; }
+.testfail { border-color: var(--danger) !important; color: var(--danger) !important; }
