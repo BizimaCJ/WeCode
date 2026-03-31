@@ -46,7 +46,7 @@
   <div class="appsection sectionhidden" id="dashboard">
     <div class="pageinner">
       <h1 class="pagetitle">Dashboard</h1>
-      <p style="color:var(--textmuted); font-size:12px; margin-top:8px;">
+      <p class="dashdesc">
         Pick a challenge or browse by difficulty. Solutions stay hidden until you give up. No what I would advise you, but alas, life happens and sometimes you just gotta see the damn solution.
       </p>
 
@@ -74,7 +74,7 @@
     <div class="pageinner">
       <div class="challengetopbar">
         <h1 class="pagetitle" style="border:none; margin:0;">Random challenge</h1>
-        <button class="newrandombutn" onclick="loadrandom()">New random</button>
+        <button class="newrandombutn" onclick="loadrandom()">New Random :D</button>
       </div>
 
       <div class="challengetoprow">
@@ -90,16 +90,16 @@
       </div>
 
       <div class="idkyet">
-        <button class="trybutn" id="trybtnid" onclick="showtryeditor('random')">Try this out</button>
+        <button class="trybutn" id="trybtnid" onclick="showtryeditor('random')">I actually want to try this!</button>
       </div>
       <div class="codeeditorwrap sectionhidden" id="editorwrapid">
           <div class="editorlabelrow">
-              <span class="editorlabel">Your JS solution</span>
+              <span class="editorlabel">Your JS attempt (I believe in you, sort of)</span>
           </div>
           <textarea class="codearea" id="codeareaid" spellcheck="false"
-              placeholder="// write your JavaScript solution here..."></textarea>
+              placeholder="// Let him cook ;)"></textarea>
           <div class="editorbtnsrow">
-              <button class="runbutn" onclick="runcode('random')">run</button>
+              <button class="runbutn" onclick="runcode('random')">Run</button>
               <button class="givinup" id="giveupbtnid" onclick="showsolution('random')">I give up :'(</button>
           </div>
           <div class="testresultswrap" id="testresultswrapid"></div>
@@ -119,7 +119,7 @@
       <h1 class="pagetitle">Search challenges</h1>
       <div class="searchrow">
         <input class="searchinput" id="searchinputid" type="text"
-          placeholder="type a challenge name...">
+          placeholder="Challenge name...">
 
         <select class="searchdropdown" id="challengedropdownid" onchange="dosearch()">
           <option value="">Or pick from this list</option>
@@ -143,17 +143,17 @@
       </div>
 
       <div class="idkyet">
-          <button class="trybutn" id="searchtrybtnid" onclick="showtryeditor('search')">try this out</button>
+          <button class="trybutn" id="searchtrybtnid" onclick="showtryeditor('search')">Try this out</button>
       </div>
       <div class="codeeditorwrap sectionhidden" id="searcheditorwrapid">
           <div class="editorlabelrow">
-              <span class="editorlabel">your javascript solution</span>
+              <span class="editorlabel">Your JavaScript solution</span>
           </div>
           <textarea class="codearea" id="searchcodeareaid" spellcheck="false"
-              placeholder="// write your JavaScript solution here..."></textarea>
+              placeholder="// Time for you to cook ;)"></textarea>
           <div class="editorbtnsrow">
-              <button class="runbutn" onclick="runcode('search')">run</button>
-              <button class="givinup" id="searchgiveupbtnid" onclick="showsolution('search')">i give up</button>
+              <button class="runbutn" onclick="runcode('search')">Run</button>
+              <button class="givinup" id="searchgiveupbtnid" onclick="showsolution('search')">I give up :'(</button>
           </div>
           <div class="testresultswrap" id="searchtestresultswrapid"></div>
       </div>
@@ -184,7 +184,7 @@
   <div class="appsection sectionhidden" id="challengedetailsection">
     <div class="pageinner">
       <div class="challengetopbar">
-        <button class="backlink" onclick="history.back()">&larr; back</button>
+       <button class="backlink" onclick="showsection(previoussection)">&larr; Retreat with dignity</button>
       </div>
 
       <div class="challengetoprow">
@@ -205,7 +205,7 @@
               <span class="editorlabel">Your JS solution</span>
           </div>
           <textarea class="codearea" id="detailcodeareaid" spellcheck="false"
-              placeholder="// write your JavaScript solution here..."></textarea>
+              placeholder="// Time for you to cook ;)"></textarea>
           <div class="editorbtnsrow">
               <button class="runbutn" onclick="runcode('detail')">Run</button>
               <button class="givinup" id="detailgiveupbtnid" onclick="showsolution('detail')">I give up :'(</button>

@@ -11,7 +11,9 @@
   --danger: #e05050;
   --dangerglow: rgba(224,80,80,0.1);
   --yellow: #d4a020;
+  --yellowglow: rgba(212,160,32,0.12);
   --green: #3fb950;
+  --greenglow: rgba(63,185,80,0.12);
   --radius: 5px;
   --font: 'Monaco', 'Menlo', monospace;
   --mono: 'Courier New', Courier, monospace;
@@ -30,8 +32,10 @@ body.lightmode {
   --accentglow: rgba(26,92,191,0.08);
   --danger: #c02020;
   --dangerglow: rgba(192,32,32,0.08);
-  --yellow: #9a6800;
-  --green: #1a7f37;
+  --yellow: #b8860b;
+  --yellowglow: rgba(184,134,11,0.15);
+  --green: #1e9e40;
+  --greenglow: rgba(30,158,64,0.15);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -52,14 +56,16 @@ body {
   align-items: center;
   justify-content: center;
   background:
-    radial-gradient(ellipse at 30% 60%, rgba(74,142,245,0.12) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(74,142,245,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 50%, rgba(63,185,80,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 20%, rgba(74,142,245,0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 80%, rgba(212,160,32,0.06) 0%, transparent 50%),
     linear-gradient(180deg, #050810 0%, #080d18 60%, #080f1e 100%);
 }
 
 body.lightmode .landingwrap {
   background:
-    radial-gradient(ellipse at 30% 60%, rgba(74,142,245,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 50%, rgba(63,185,80,0.08) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 20%, rgba(74,142,245,0.12) 0%, transparent 50%),
     linear-gradient(180deg, #dce8ff 0%, #e8f0fc 100%);
 }
 
@@ -122,7 +128,6 @@ body.lightmode .landingbox {
   box-shadow: 0 8px 28px rgba(74,142,245,0.4);
 }
 
-/* ======== NAVBAR ======== */
 
 .navwrap {
   background: rgba(8,13,24,0.92);
@@ -171,15 +176,9 @@ body.lightmode .navwrap {
   letter-spacing: 0.2px;
 }
 
-.navlinkitem:hover {
-  color: var(--text);
-  background: var(--surface2);
-}
+.navlinkitem:hover { color: var(--text); background: var(--surface2); }
 
-.navlinkitem.activenav {
-  color: #fff;
-  background: var(--accent);
-}
+.navlinkitem.activenav { color: #fff; background: var(--accent); }
 
 .navright { display: flex; align-items: center; }
 
@@ -250,30 +249,36 @@ body.lightmode .navwrap {
 .dashcard::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   height: 2px;
-  background: var(--accent);
   opacity: 0;
   transition: opacity 0.2s;
 }
 
+.dashcard:nth-child(1)::before { background: var(--accent); }
+.dashcard:nth-child(2)::before { background: var(--green); }
+.dashcard:nth-child(3)::before { background: var(--yellow); }
+
 .dashcard:hover {
-  border-color: var(--accent);
-  background: var(--surface2);
   transform: translateY(-3px);
-  box-shadow: 0 8px 32px rgba(74,142,245,0.1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
 }
+
+.dashcard:nth-child(1):hover { border-color: var(--accent); background: var(--accentglow); }
+.dashcard:nth-child(2):hover { border-color: var(--green); background: var(--greenglow); }
+.dashcard:nth-child(3):hover { border-color: var(--yellow); background: var(--yellowglow); }
 
 .dashcard:hover::before { opacity: 1; }
 
 .dashcard h3 {
   font-size: 13px;
   margin-bottom: 10px;
-  color: var(--accent);
   letter-spacing: 0.3px;
 }
+
+.dashcard:nth-child(1) h3 { color: var(--accent); }
+.dashcard:nth-child(2) h3 { color: var(--green); }
+.dashcard:nth-child(3) h3 { color: var(--yellow); }
 
 .dashcard p {
   font-size: 11px;
@@ -281,7 +286,6 @@ body.lightmode .navwrap {
   line-height: 1.65;
 }
 
-/* ======== CHALLENGE DISPLAY ======== */
 
 .challengetopbar {
   display: flex;
@@ -321,9 +325,9 @@ body.lightmode .navwrap {
 }
 
 .diffintermediate {
-  background: rgba(212,160,32,0.1);
+  background: rgba(212,160,32,0.12);
   color: var(--yellow);
-  border: 1px solid rgba(212,160,32,0.3);
+  border: 1px solid rgba(212,160,32,0.35);
 }
 
 .diffexpert {
@@ -333,13 +337,12 @@ body.lightmode .navwrap {
 }
 
 .descriptiontxt {
-  color: var(--text);
+  color: var(--textmuted);
   line-height: 1.8;
   margin-bottom: 28px;
   font-size: 13px;
   max-width: 720px;
 }
-
 
 .testcasesblock { margin-bottom: 28px; }
 
@@ -368,6 +371,40 @@ body.lightmode .navwrap {
 .testcasebox:hover { border-left-color: var(--accent); }
 .testcasebox span { color: var(--text); }
 
+.testpass {
+  border-left-color: var(--green) !important;
+  color: var(--green) !important;
+  background: var(--greenglow) !important;
+}
+
+.testpass span { color: var(--green) !important; }
+
+.testfail {
+  border-left-color: var(--danger) !important;
+  color: var(--danger) !important;
+  background: var(--dangerglow) !important;
+}
+
+.testfail span { color: var(--danger) !important; }
+
+.allpassedbanner {
+  margin-top: 10px;
+  padding: 12px 16px;
+  background: var(--greenglow);
+  border: 1px solid rgba(63,185,80,0.35);
+  border-radius: var(--radius);
+  color: var(--green);
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  text-align: center;
+  animation: fadein 0.4s ease;
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 
 .newrandombutn {
   background: transparent;
@@ -387,23 +424,25 @@ body.lightmode .navwrap {
   background: var(--accentglow);
 }
 
+.idkyet { margin-top: 24px; }
+.idkyetlg { margin-top: 36px; }
+
 .trybutn {
   background: transparent;
-  border: 1px solid var(--accent);
-  color: var(--accent);
+  border: 1px solid var(--green);
+  color: var(--green);
   font-family: var(--font);
   font-size: 12px;
   padding: 8px 20px;
   border-radius: var(--radius);
   cursor: pointer;
   transition: all 0.15s;
-  margin-top: 8px;
   display: inline-block;
 }
 
 .trybutn:hover {
-  background: var(--accentglow);
-  box-shadow: 0 0 16px rgba(74,142,245,0.15);
+  background: var(--greenglow);
+  box-shadow: 0 0 16px rgba(63,185,80,0.15);
 }
 
 .givinup {
@@ -418,9 +457,7 @@ body.lightmode .navwrap {
   transition: all 0.15s;
 }
 
-.givinup:hover {
-  background: var(--dangerglow);
-}
+.givinup:hover { background: var(--dangerglow); }
 
 .runbutn {
   background: var(--accent);
@@ -461,14 +498,10 @@ body.lightmode .navwrap {
   font-family: var(--font);
   padding: 0;
   transition: color 0.15s;
-  letter-spacing: 0.2px;
 }
 
 .backlink:hover { color: var(--accent); }
 
-/* ======== CODE EDITOR ======== */
-
-.idkyet { margin-top: 24px; }
 
 .codeeditorwrap {
   margin-top: 18px;
@@ -489,7 +522,7 @@ body.lightmode .navwrap {
 
 .editorlabel {
   font-size: 11px;
-  color: var(--textmuted);
+  color: var(--green);
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
@@ -527,19 +560,6 @@ body.lightmode .navwrap {
   gap: 6px;
   background: var(--surface);
 }
-
-.testpass {
-  border-left: 3px solid var(--green) !important;
-  color: var(--green) !important;
-  background: rgba(63,185,80,0.05) !important;
-}
-
-.testfail {
-  border-left: 3px solid var(--danger) !important;
-  color: var(--danger) !important;
-  background: rgba(224,80,80,0.05) !important;
-}
-
 
 .solutionwrap { margin-top: 24px; }
 
@@ -637,28 +657,45 @@ body.lightmode .navwrap {
   letter-spacing: 0.3px;
 }
 
-.filterbutn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accentglow);
+.filterbutn:hover { border-color: var(--accent); color: var(--accent); background: var(--accentglow); }
+
+.filterbutn[data-diff="Beginner"] {
+  border-color: var(--green);
+  color: var(--green);
 }
 
+.filterbutn[data-diff="Beginner"]:hover,
 .filterbutn[data-diff="Beginner"].activefilter {
-  background: rgba(74,142,245,0.12);
-  border-color: var(--accent);
-  color: var(--accent);
+  background: var(--greenglow);
+  border-color: var(--green);
+  color: var(--green);
+  font-weight: bold;
 }
 
-.filterbutn[data-diff="Intermediate"].activefilter {
-  background: rgba(212,160,32,0.12);
+.filterbutn[data-diff="Intermediate"] {
   border-color: var(--yellow);
   color: var(--yellow);
 }
 
-.filterbutn[data-diff="Expert"].activefilter {
-  background: rgba(224,80,80,0.12);
+.filterbutn[data-diff="Intermediate"]:hover,
+.filterbutn[data-diff="Intermediate"].activefilter {
+  background: var(--yellowglow);
+  border-color: var(--yellow);
+  color: var(--yellow);
+  font-weight: bold;
+}
+
+.filterbutn[data-diff="Expert"] {
   border-color: var(--danger);
   color: var(--danger);
+}
+
+.filterbutn[data-diff="Expert"]:hover,
+.filterbutn[data-diff="Expert"].activefilter {
+  background: var(--dangerglow);
+  border-color: var(--danger);
+  color: var(--danger);
+  font-weight: bold;
 }
 
 
@@ -703,16 +740,39 @@ body.lightmode .navwrap {
 }
 
 
-
-.idkyet { margin-top: 24px; }
-.idkyetlg { margin-top: 36px; }
-.solutionbutn {
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  font-family: var(--font);
-  font-size: 12px;
-  padding: 8px 18px;
-  border-radius: var(--radius);
-  cursor: pointer;
+.confettiwrap {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
 }
+
+.confettipiece {
+  position: absolute;
+  top: -12px;
+  animation: confettifall linear forwards;
+}
+
+@keyframes confettifall {
+  0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(105vh) rotate(720deg) scale(0.6); opacity: 0; }
+}
+
+
+body.lightmode .dashcard:nth-child(2) h3 { color: #1a9e3a; }
+body.lightmode .dashcard:nth-child(3) h3 { color: #b07800; }
+body.lightmode .dashcard:nth-child(2):hover { border-color: #1a9e3a; background: rgba(30,158,64,0.08); }
+body.lightmode .dashcard:nth-child(3):hover { border-color: #b07800; background: rgba(176,120,0,0.08); }
+
+body.lightmode .diffintermediate { color: #9a6000; border-color: rgba(154,96,0,0.45); background: rgba(154,96,0,0.1); }
+
+body.lightmode .trybutn { border-color: #1a9e3a; color: #1a9e3a; }
+body.lightmode .trybutn:hover { background: rgba(30,158,64,0.1); }
+body.lightmode .testpass { color: #1a7f37 !important; background: rgba(26,127,55,0.1) !important; border-left-color: #1a7f37 !important; }
+body.lightmode .testpass span { color: #1a7f37 !important; }
+body.lightmode .allpassedbanner { color: #1a7f37; border-color: rgba(26,127,55,0.35); background: rgba(26,127,55,0.08); }
+
